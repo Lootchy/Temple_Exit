@@ -11,14 +11,13 @@ Le joueur doit s'échapper du temple en manipulant l'environnement : objets phys
 
 ### Contrôles
 
-Touche | Action | Input Action 
-
-ZQSD / WASD | Se déplacer | `IA_Move` 
-Souris | Caméra | `IA_Look` / `IA_MouseLook` 
-Espace | Sauter | `IA_Jump` 
-**E** | Interagir | `IA_Interact` 
-**F** | Utiliser l'objet tenu (lancer) | `IA_UseItem` 
-**R** | Lâcher | `IA_Grab` 
+| Touche | Action | Input Action |
+|---|---|---|
+| ZQSD / WASD | Se déplacer | `IA_Move` |
+| Souris | Caméra | `IA_Look` / `IA_MouseLook` |
+| **E** | Interagir | `IA_Interact` |
+| **F** | Utiliser l'objet tenu (lancer) | `IA_UseItem` |
+| **R** | Lâcher | `IA_Grab` |
 
 Les indications (`E to interact`, `F to use`, `R to drop`) sont affichées par le widget `UI_Player`.
 
@@ -28,15 +27,15 @@ Les indications (`E to interact`, `F to use`, `R to drop`) sont affichées par l
 - **Lancer** (`BP_LaunchBall`) : un objet tenu peut être lancé avec **F**. La trajectoire est prévisualisée (`PredictProjectilePath`) puis la balle reçoit une impulsion dans la direction de la caméra.
 
 ### Puzzles & mécanismes
-Mécanique | Blueprint | Fonctionnement 
-
-Bouton | `BP_Button` → `BP_DemolitionBall` | Le bouton se déclenche quand il est touché par une `BP_LaunchBall` → l'event `E_ButtonPressed` lâche la boule de démolition (physique + constraint). 
-Pilier | `BP_Pillar` | Cassé par la boule de démolition (hit) → son + camera shake. 
-Rocher roulant | `BP_RollingStone` | Passe en simulation physique au déclenchement, vitesse clampée, son de tremblement de terre + camera shake (`CS_Rolling`). 
-Mur destructible | `BP_Wall` | Geometry Collection qui se fracture sous l'impact du rocher (seuil de dégâts), camera shake (`CS_Destruction`). 
-Jump Pad | `BP_JumpPad` | Overlap → `LaunchCharacter` + VFX Niagara (`NS_JumpPa`) animé par Timeline. 
-Sol glissant | `BP_SlipperyFloor` | Overlap → réduit `GroundFriction` / `BrakingDecelerationWalking` du joueur, valeurs restaurées en sortie. Matériau de glace *IceCool*. 
-Pont cassable | `BP_BreakableBridge` | Assemblage de `BP_BreakableGround` + `BP_Anchor` (Field System) pour créer un pont qui s'effondre. 
+| Mécanique | Blueprint | Fonctionnement |
+|---|---|---|
+| Bouton | `BP_Button` → `BP_DemolitionBall` | Le bouton se déclenche quand il est touché par une `BP_LaunchBall` → l'event `E_ButtonPressed` lâche la boule de démolition (physique + constraint). |
+| Pilier | `BP_Pillar` | Cassé par la boule de démolition (hit) → son + camera shake. |
+| Rocher roulant | `BP_RollingStone` | Passe en simulation physique au déclenchement, vitesse clampée, son de tremblement de terre + camera shake (`CS_Rolling`). |
+| Mur destructible | `BP_Wall` | Geometry Collection qui se fracture sous l'impact du rocher (seuil de dégâts), camera shake (`CS_Destruction`). |
+| Jump Pad | `BP_JumpPad` | Overlap → `LaunchCharacter` + VFX Niagara (`NS_JumpPa`) animé par Timeline. |
+| Sol glissant | `BP_SlipperyFloor` | Overlap → réduit `GroundFriction` / `BrakingDecelerationWalking` du joueur, valeurs restaurées en sortie. Matériau de glace *IceCool*. |
+| Pont cassable | `BP_BreakableBridge` | Assemblage de `BP_BreakableGround` + `BP_Anchor` (Field System) pour créer un pont qui s'effondre. |
 
 ---
 
@@ -51,11 +50,11 @@ Chaque mécanisme suit le même schéma :
 
 Le déclencheur ne connaît pas ce qu'il déclenche : c'est la cible qui s'abonne au dispatcher (référence à l'instance placée dans le niveau).
 
-Blueprint | Enum d'état | Valeurs | Dispatcher
-
-`BP_Button` | `E_ButtonState` | Normal → Pressed | `E_ButtonPressed` 
-`BP_Wall` | `E_Wall` | Normal → Break | `E_StateChanged` 
-`BP_RollingStone` | `E_StoneState` | Freeze → Move | *(fonction `Change State`)* 
+| Blueprint | Enum d'état | Valeurs | Dispatcher |
+|---|---|---|---|
+| `BP_Button` | `E_ButtonState` | Normal → Pressed | `E_ButtonPressed` |
+| `BP_Wall` | `E_Wall` | Normal → Break | `E_StateChanged` |
+| `BP_RollingStone` | `E_StoneState` | Freeze → Move | *(fonction `Change State`)* |
 
 - **Joueur → objets** : `BPC_Interact` ne caste jamais vers un type d'objet précis. Il appelle les fonctions de l'interface `BPI_Interact` (`Interact`, `Show Outline`, `Release`) sur l'acteur visé ; `BP_InteractActor` est la classe parent des objets interactifs.
 - **Bouton → boule de démolition → pilier** : la balle lancée active le bouton, qui passe en `Pressed` et broadcast `E_ButtonPressed`. `BP_DemolitionBall` est abonnée et active sa physique, puis la collision avec `BP_Pillar` le fait casser.
